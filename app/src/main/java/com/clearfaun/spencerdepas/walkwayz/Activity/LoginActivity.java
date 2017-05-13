@@ -120,22 +120,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private void logIn() {
         mProgressView.setVisibility(View.VISIBLE);
-        BackendlessManager.getInstance().logIn(getString(R.string.user_name),
+        BackendlessManager.getInstance().logIn(mEmailView.getText().toString(),
                 getString(R.string.password), new BackendlessCallback(){
                     @Override
-                    public void loginSuccess(BackendlessUser user) {
+                    public void callbackSuccess(BackendlessUser user) {
                         mProgressView.setVisibility(View.INVISIBLE);
+                        goToMainActivity();
 
-
-                        BackendlessUser userr = Backendless.UserService.CurrentUser();
-                        //userr.
-                        mProgressView.setVisibility(View.INVISIBLE);
-
-                        //goToMainActivity();
                     }
 
                     @Override
-                    public void loginFailure(BackendlessFault fault) {
+                    public void callbackFailure(BackendlessFault fault) {
                         mProgressView.setVisibility(View.INVISIBLE);
                         Toast.makeText(LoginActivity.this, "Log in failed, try again.", Toast.LENGTH_SHORT).show();
                     }

@@ -1,9 +1,5 @@
 package com.clearfaun.spencerdepas.walkwayz.Model;
 
-import com.clearfaun.spencerdepas.walkwayz.Manager.UserManager;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.gson.annotations.SerializedName;
-
 /**
  * Created by SpencerDepas on 5/7/17.
  */
@@ -19,16 +15,17 @@ public class User {
         return user;
     }
 
-    private int age = 17;
+    private String age = "17";
     private String id = "6636gdggdduu9WWE";
     private String email = "spencerdepas@gmail.com";
     private String name = "Spencer";
     private String sex = "Male";
     private String emergencyContact;
     private String password = "talkingplumcake";
-    private int height = 88;
+    private int height = 200;
     private String image;
-    private LatLng location = new LatLng(54.351210, 18.646448);
+    private int phone = 7747477;
+    private UserLocation location = new UserLocation();
 
     public String getPassword() {
         return password;
@@ -54,19 +51,20 @@ public class User {
         this.image = image;
     }
 
-    public LatLng getLocationLatLng() {
+    public UserLocation getLocation() {
         return location;
     }
 
-    public void setLocation(LatLng location) {
+    public void setLocation(UserLocation location) {
         this.location = location;
     }
 
-    public int getAge() {
+
+    public String getAge() {
         return age;
     }
 
-    public void setAge(int age) {
+    public void setAge(String age) {
         this.age = age;
     }
 
@@ -110,5 +108,12 @@ public class User {
         this.email = email;
     }
 
+    public int getPhone() {
+        return phone;
+    }
+
+    public void setPhone(int phone) {
+        this.phone = phone;
+    }
 
 }

@@ -9,6 +9,6 @@ import com.backendless.exceptions.BackendlessFault;
 
 public interface BackendlessCallback {
 
-    public void loginSuccess(BackendlessUser user);
-    public void loginFailure(BackendlessFault fault);
+    public void callbackSuccess(BackendlessUser user);
+    public void callbackFailure(BackendlessFault fault);
 }

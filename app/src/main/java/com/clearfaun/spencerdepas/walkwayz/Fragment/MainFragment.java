@@ -5,22 +5,26 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.backendless.Backendless;
+import com.backendless.BackendlessUser;
+import com.backendless.exceptions.BackendlessFault;
 import com.clearfaun.spencerdepas.walkwayz.Activity.WalkWayzApplication;
-import com.clearfaun.spencerdepas.walkwayz.DataAccess.BackendlessDataAccess;
+import com.clearfaun.spencerdepas.walkwayz.Manager.BackendlessCallback;
+import com.clearfaun.spencerdepas.walkwayz.Manager.BackendlessManager;
 import com.clearfaun.spencerdepas.walkwayz.Model.User;
 import com.clearfaun.spencerdepas.walkwayz.R;
 
 import java.util.HashMap;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -38,13 +42,16 @@ public class MainFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    @BindView(R.id.main_progress) ProgressBar progressBar;
+
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
 
-    private BackendlessDataAccess callCenterDataAccess;
+
 
     public MainFragment() {
         // Required empty public constructor
@@ -85,12 +92,25 @@ public class MainFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        
 
+    }
 
-        callCenterDataAccess = new BackendlessDataAccess(WalkWayzApplication.getAppContext());
+    private void updateUser(){
+        progressBar.setVisibility(View.VISIBLE);
+        BackendlessManager.getInstance().updateUser(Backendless.UserService.CurrentUser(),
+                new BackendlessCallback(){
+                    @Override
+                    public void callbackSuccess(BackendlessUser user) {
+                        progressBar.setVisibility(View.INVISIBLE);
+                    }
 
-        //callCenterDataAccess.setUserData(setUserData());
-        //callCenterDataAccess.getUserData();
+                    @Override
+                    public void callbackFailure(BackendlessFault fault) {
+                        progressBar.setVisibility(View.INVISIBLE);
+                    }
+                }
+        );
     }
 
     private HashMap setUserData(){
@@ -99,7 +119,7 @@ public class MainFragment extends Fragment {
         userInfo.put( "email",  User.getInstance().getEmail() );
         userInfo.put( "password",   User.getInstance().getPassword() );
         userInfo.put( "height", User.getInstance().getHeight());
-        userInfo.put( "location",User.getInstance().getLocationLatLng());
+        userInfo.put( "location",User.getInstance().getLocation());
         return userInfo;
     }
 

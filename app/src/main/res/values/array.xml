@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <string-array name="spinnerItems">
+        <item>Get Help</item>
+        <item>Speak to ELH</item>
+        <item>Notify Your Family</item>
+        <item>Confirm Your Well-being</item>
+    </string-array>
+
+
+</resources>

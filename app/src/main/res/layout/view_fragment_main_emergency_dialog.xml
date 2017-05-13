@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="220dp">
+
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginRight="16dp"
+        android:text="Countdown"
+        android:textColor="@color/primary_text"
+        android:textSize="21sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/dialog_text_body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="16dp"
+        android:text="Bum hole attack in the anal spectrummmmmm it hurts like penuts on a acarrot"
+        android:textColor="@color/secondary_text"
+        android:textSize="17sp" />
+
+    <TextView
+        android:id="@+id/dialog_countdown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/dialog_text_body"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="16dp"
+        android:textStyle="bold"
+        android:textColor="@color/primary_text"
+        android:textSize="30sp" />
+
+
+    <Button
+        android:id="@+id/dialogButtonOK"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:textColor="@color/colorAccent"
+        style="@style/Widget.AppCompat.Button.Borderless"/>
+
+
+
+
+</RelativeLayout>

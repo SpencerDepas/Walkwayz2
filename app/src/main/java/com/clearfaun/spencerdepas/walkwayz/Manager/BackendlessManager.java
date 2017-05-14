@@ -30,6 +30,10 @@ public class BackendlessManager {
     private final String NAME = "name";
     private final String PASSWORD = "password";
     private final String IMAGE = "image";
+    private final String EMERGENCY = "Emergencies";
+    private final String EMERGENCY_TYPE = "emergency_type";
+
+    private final String USER = "user";
 
 
     private static BackendlessManager backendlessManager;
@@ -66,6 +70,27 @@ public class BackendlessManager {
         return Backendless.UserService.CurrentUser();
     }
 
+
+    public void emergencyCall(String emergencyType, final BackendlessEmergencyCallback backendlessCallback) {
+        HashMap emergencyInfo = new HashMap();
+        emergencyInfo.put( EMERGENCY_TYPE, emergencyType);
+
+        BackendlessUser user = getCurrentUser();
+        emergencyInfo.put( USER, getCurrentUser());
+        GeoPoint geoPoint = new GeoPoint(3.22,
+                23.4445);
+        user.setProperty(LOCATION, geoPoint);
+        Backendless.Persistence.of( EMERGENCY ).save( emergencyInfo, new AsyncCallback<Map>() {
+            public void handleResponse( Map response ) {
+                backendlessCallback.callbackSuccess(response);
+            }
+
+            public void handleFault( BackendlessFault fault ) {
+                backendlessCallback.callbackFailure(fault);
+            }
+        });
+    }
+
     public void updateUser(BackendlessUser user, final BackendlessCallback backendlessCallback) {
         user.setProperty(AGE, User.getInstance().getAge());
         user.setProperty(PHONE, User.getInstance().getPhone());
@@ -86,6 +111,13 @@ public class BackendlessManager {
             }
         });
     }
+
+    public interface BackendlessEmergencyCallback {
+        public void callbackSuccess(Map response);
+        public void callbackFailure(BackendlessFault fault);
+    }
+
+
 
 
     private void saveGlobleGeoLocation() {

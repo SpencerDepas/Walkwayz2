@@ -24,7 +24,7 @@ public class User {
     private String password = "talkingplumcake";
     private int height = 200;
     private String image;
-    private int phone = 7747477;
+    private String phone = "6466646127";
     private UserLocation location = new UserLocation();
 
     public String getPassword() {
@@ -108,11 +108,11 @@ public class User {
         this.email = email;
     }
 
-    public int getPhone() {
+    public String getPhone() {
         return phone;
     }
 
-    public void setPhone(int phone) {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 

@@ -2,11 +2,11 @@
 <resources>
 
 
-    <string-array name="spinnerItems">
-        <item>Get Help</item>
-        <item>Speak to ELH</item>
-        <item>Notify Your Family</item>
-        <item>Confirm Your Well-being</item>
+    <string-array name="emergency_type">
+        <item>I am being Followed</item>
+        <item>Someone is trying to rape me</item>
+        <item>There is a Fire</item>
+        <item>Someone is Shooting a gun</item>
     </string-array>
 
 

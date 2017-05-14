@@ -5,28 +5,31 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
 import com.backendless.exceptions.BackendlessFault;
-import com.clearfaun.spencerdepas.walkwayz.Activity.WalkWayzApplication;
 import com.clearfaun.spencerdepas.walkwayz.Manager.BackendlessCallback;
 import com.clearfaun.spencerdepas.walkwayz.Manager.BackendlessManager;
-import com.clearfaun.spencerdepas.walkwayz.Model.User;
 import com.clearfaun.spencerdepas.walkwayz.R;
 
-import java.util.HashMap;
+import java.util.Map;
 
+import butterknife.BindArray;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnItemSelected;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -43,6 +46,13 @@ public class MainFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     @BindView(R.id.main_progress) ProgressBar progressBar;
+    @BindView(R.id.emergency_type_spinner) Spinner spinner;
+    @BindView(R.id.help_type) TextView helpTypeTextView;
+
+    @BindArray(R.array.emergency_type)
+    protected String [] spinnerEmergencyTypes;
+
+    private int currentIndexOfEmergency = 0;
 
 
     // TODO: Rename and change types of parameters
@@ -92,7 +102,15 @@ public class MainFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        
+
+
+
+    }
+
+    @OnItemSelected(R.id.emergency_type_spinner)
+    public void spinnerItemSelected(Spinner spinner, int position) {
+        currentIndexOfEmergency = position;
+        helpTypeTextView.setText(spinnerEmergencyTypes[currentIndexOfEmergency]);
 
     }
 
@@ -113,18 +131,25 @@ public class MainFragment extends Fragment {
         );
     }
 
-    private HashMap setUserData(){
-        HashMap userInfo = new HashMap<>();
-        userInfo.put( "age",  User.getInstance().getAge() );
-        userInfo.put( "email",  User.getInstance().getEmail() );
-        userInfo.put( "password",   User.getInstance().getPassword() );
-        userInfo.put( "height", User.getInstance().getHeight());
-        userInfo.put( "location",User.getInstance().getLocation());
-        return userInfo;
-    }
 
     private void timerComplete(){
-        //callCenterDataAccess.setUserData(setUserData());
+        progressBar.setVisibility(View.VISIBLE);
+        BackendlessManager.getInstance().emergencyCall(spinnerEmergencyTypes[currentIndexOfEmergency],
+                new BackendlessManager.BackendlessEmergencyCallback(){
+                       @Override
+                       public void callbackSuccess(Map response) {
+                           progressBar.setVisibility(View.INVISIBLE);
+                           Snackbar.make(progressBar, R.string.main_fragment_emergency_success,
+                                   Snackbar.LENGTH_LONG).show();
+                       }
+
+                       @Override
+                       public void callbackFailure(BackendlessFault fault) {
+                           progressBar.setVisibility(View.INVISIBLE);
+
+                       }
+                   }
+        );
     }
 
     private void showLocationDialog() {
@@ -135,13 +160,15 @@ public class MainFragment extends Fragment {
         TextView text = (TextView) dialog.findViewById(R.id.dialog_text_body);
         text.setText("Android custom dialog example!");
         final TextView mTextField = (TextView) dialog.findViewById(R.id.dialog_countdown);
-        new CountDownTimer(10000, 1000) {
+        new CountDownTimer(5000, 1000) {
             public void onTick(long millisUntilFinished) {
                 mTextField.setText("" + millisUntilFinished / 1000);
             }
             public void onFinish() {
+                if(dialog.isShowing()){
+                    timerComplete();
+                }
                 dialog.dismiss();
-                timerComplete();
             }
         }.start();
         Button dialogButton = (Button) dialog.findViewById(R.id.dialogButtonOK);

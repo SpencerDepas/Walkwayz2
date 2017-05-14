@@ -44,21 +44,23 @@
 
         <TextView
             android:id="@+id/help_type"
-            android:layout_width="wrap_content"
+            android:layout_width="87dp"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/icon_button"
             android:text="Get Help"
+            android:ellipsize="end"
             android:textAllCaps="true"
             android:textColor="@color/colorAccent"
             android:textSize="@dimen/fragment_main_emergency_text_size"
             android:textStyle="bold" />
 
         <Spinner
+            android:id="@+id/emergency_type_spinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:entries="@array/spinnerItems"
+            android:entries="@array/emergency_type"
             android:layout_toRightOf="@id/help_type"
             android:backgroundTint="@color/colorAccent">
 

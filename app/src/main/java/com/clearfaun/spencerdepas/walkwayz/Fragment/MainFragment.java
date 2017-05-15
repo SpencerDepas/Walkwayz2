@@ -9,11 +9,13 @@ import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,7 +29,6 @@ import com.clearfaun.spencerdepas.walkwayz.Manager.BackendlessManager;
 import com.clearfaun.spencerdepas.walkwayz.Model.User;
 import com.clearfaun.spencerdepas.walkwayz.Model.UserLocation;
 import com.clearfaun.spencerdepas.walkwayz.R;
-import com.clearfaun.spencerdepas.walkwayz.Service.LocationProvider;
 import com.hypertrack.lib.HyperTrack;
 import com.hypertrack.lib.callbacks.HyperTrackCallback;
 import com.hypertrack.lib.models.ErrorResponse;
@@ -49,7 +50,7 @@ import butterknife.OnItemSelected;
  * Use the {@link MainFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MainFragment extends Fragment implements LocationProvider.LocationCallback{
+public class MainFragment extends Fragment{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -58,11 +59,16 @@ public class MainFragment extends Fragment implements LocationProvider.LocationC
     @BindView(R.id.main_progress) ProgressBar progressBar;
     @BindView(R.id.emergency_type_spinner) Spinner spinner;
     @BindView(R.id.help_type) TextView helpTypeTextView;
+    @BindView(R.id.background) RelativeLayout background;
+    @BindView(R.id.icon_subtext) TextView iconSubText;
+
 
     @BindArray(R.array.emergency_type)
     protected String [] spinnerEmergencyTypes;
 
     private int currentIndexOfEmergency = 0;
+    private final static String ALERT_MODE = "alert_mode";
+    private final static String INACTIVE_MODE = "inactive_mode";
 
 
     // TODO: Rename and change types of parameters
@@ -89,11 +95,41 @@ public class MainFragment extends Fragment implements LocationProvider.LocationC
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getExtras();
+    }
+
+    private void switchVisualState(String mode){
+        switch (mode) {
+            case INACTIVE_MODE:
+                inactiveMode();
+                break;
+            case ALERT_MODE:
+                alertMode();
+                break;
+            default: inactiveMode();
+                break;
+        }
+    }
+
+    private void alertMode(){
+        background.setBackgroundColor(
+                ContextCompat.getColor(WalkWayzApplication.getAppContext(), R.color.amber));
+        iconSubText.setText("We are aware of your issue," +
+                " help has been notified");
+    }
+    private void inactiveMode(){
+        background.setBackgroundColor(
+                ContextCompat.getColor(WalkWayzApplication.getAppContext(), R.color.colorPrimary));
+        iconSubText.setText("we've got your back");
+    }
+
+    private void getExtras(){
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
+
 
     @SuppressWarnings("unused")
     @OnClick(R.id.emergency_fab)
@@ -128,7 +164,7 @@ public class MainFragment extends Fragment implements LocationProvider.LocationC
 
         // Stop HyperTrack SDK
         HyperTrack.stopTracking();
-
+        switchVisualState(INACTIVE_MODE);
 
     }
 
@@ -165,7 +201,7 @@ public class MainFragment extends Fragment implements LocationProvider.LocationC
             @Override
             public void onSuccess(@NonNull SuccessResponse successResponse) {
                 // Hide Login Button loader
-
+                switchVisualState(ALERT_MODE);
                 //com.hypertrack.lib.models.User user = (com.hypertrack.lib.models.User) successResponse.getResponseObject();
                 getCurrentUserLocation();
             }
@@ -210,7 +246,6 @@ public class MainFragment extends Fragment implements LocationProvider.LocationC
             }
         });
     }
-
 
     private void updateBackendless(){
         BackendlessManager.getInstance().emergencyCall(spinnerEmergencyTypes[currentIndexOfEmergency],
@@ -279,11 +314,6 @@ public class MainFragment extends Fragment implements LocationProvider.LocationC
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
-
-    @Override
-    public void handleNewLocation(Location location) {
-
     }
 
 

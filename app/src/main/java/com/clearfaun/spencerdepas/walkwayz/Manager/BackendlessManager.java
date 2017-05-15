@@ -32,6 +32,10 @@ public class BackendlessManager {
     public static final String IMAGE = "image";
     public static final String EMERGENCY = "Emergencies";
     public static final String EMERGENCY_TYPE = "emergency_type";
+    public static final String HYPER_TRACK_USER_ID = "hypertrackID";
+    public static final String OBJECT_ID = "objectId";
+
+
     public static final String ID = "ownerId";
 
     private final String USER = "user";
@@ -75,6 +79,7 @@ public class BackendlessManager {
     public void emergencyCall(String emergencyType, final BackendlessEmergencyCallback backendlessCallback) {
         HashMap emergencyInfo = new HashMap();
         emergencyInfo.put( EMERGENCY_TYPE, emergencyType);
+        emergencyInfo.put( HYPER_TRACK_USER_ID, User.getInstance().getHypertrackID());
 
         BackendlessUser user = getCurrentUser();
         emergencyInfo.put( USER, getCurrentUser());

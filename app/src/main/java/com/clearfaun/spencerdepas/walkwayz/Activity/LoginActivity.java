@@ -246,14 +246,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         // Hide Login Button loader
                         mProgressView.setVisibility(View.INVISIBLE);
 
-                        com.hypertrack.lib.models.User user = (com.hypertrack.lib.models.User) successResponse.getResponseObject();
+                        com.hypertrack.lib.models.User hypertrackUser = (com.hypertrack.lib.models.User) successResponse.getResponseObject();
                         // Handle createUser success here, if required
                         // HyperTrack SDK auto-configures UserId on createUser API call,
                         // so no need to call HyperTrack.setUserId() API
-
-                        // On UserLogin success
+                        User.getInstance().setHypertrackID(hypertrackUser.getId());
                         goToMainActivity();
-
                     }
 
                     @Override

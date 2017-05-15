@@ -28,6 +28,7 @@ public class User {
     private int height = 200;
     private String image;
     private String phone = "6466646127";
+    private String hypertrackID;
     private UserLocation location = new UserLocation();
 
 
@@ -127,6 +128,14 @@ public class User {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getHypertrackID() {
+        return hypertrackID;
+    }
+
+    public void setHypertrackID(String hypertrackID) {
+        this.hypertrackID = hypertrackID;
     }
 
 }

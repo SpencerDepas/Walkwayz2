@@ -2,6 +2,8 @@ package com.clearfaun.spencerdepas.walkwayz.Activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
@@ -11,6 +13,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Toast;
 
 import com.clearfaun.spencerdepas.walkwayz.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -19,10 +22,20 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.hypertrack.lib.HyperTrack;
+import com.hypertrack.lib.callbacks.HyperTrackCallback;
+import com.hypertrack.lib.models.ErrorResponse;
+import com.hypertrack.lib.models.SuccessResponse;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+
+    LatLng position1 = new LatLng(54.5312293, 18.5193164);
+    LatLng position2 = new LatLng(54.53332, 18.5250559);
+    LatLng position3 = new LatLng(54.5161936, 18.5396568);
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,9 +44,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         setUpToolBar();
 
+        getCurrentUserLocation();
+        setUpMap();
 
+    }
 
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+    private void setUpMap(){
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -65,13 +81,35 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+    }
 
-        // Add a marker in Sydney and move the camera
-        LatLng poland = new LatLng(54.351210, 18.646448);
-        mMap.addMarker(new MarkerOptions().position(poland).title("Marker in Poland"));
+    private void updateMapCameraLocation( Location location){
+        LatLng poland = new LatLng(location.getLatitude(), location.getLongitude());
+        mMap.setMyLocationEnabled(true);
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(poland,14));
+    }
 
+    private void addHardCodedMarkers(){
 
+        mMap.addMarker(new MarkerOptions().position(position1).title("P1").snippet("bum fluff"));
+        mMap.addMarker(new MarkerOptions().position(position2).title("P2"));
+        mMap.addMarker(new MarkerOptions().position(position3).title("P3"));
 
+    }
+
+    private void getCurrentUserLocation(){
+        HyperTrack.getCurrentLocation(new HyperTrackCallback() {
+            @Override
+            public void onSuccess(@NonNull SuccessResponse successResponse) {
+                Location location = (Location) successResponse.getResponseObject();
+                updateMapCameraLocation(location);
+                addHardCodedMarkers();
+            }
+
+            @Override
+            public void onError(@NonNull ErrorResponse errorResponse) {
+
+            }
+        });
     }
 }

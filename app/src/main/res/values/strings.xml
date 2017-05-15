@@ -6,6 +6,8 @@
 
     <string name="action_settings">Settings</string>
     <string name="title_activity_login">Sign in</string>
+    <string name="hyper_track_location_success">You location is securely being tracked by WalkWays</string>
+    <string name="hyper_track_location_failure">Please try again</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>

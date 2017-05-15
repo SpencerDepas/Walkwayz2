@@ -6,16 +6,17 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
@@ -23,8 +24,14 @@ import com.backendless.exceptions.BackendlessFault;
 import com.clearfaun.spencerdepas.walkwayz.Activity.WalkWayzApplication;
 import com.clearfaun.spencerdepas.walkwayz.Manager.BackendlessCallback;
 import com.clearfaun.spencerdepas.walkwayz.Manager.BackendlessManager;
+import com.clearfaun.spencerdepas.walkwayz.Model.User;
+import com.clearfaun.spencerdepas.walkwayz.Model.UserLocation;
 import com.clearfaun.spencerdepas.walkwayz.R;
 import com.clearfaun.spencerdepas.walkwayz.Service.LocationProvider;
+import com.hypertrack.lib.HyperTrack;
+import com.hypertrack.lib.callbacks.HyperTrackCallback;
+import com.hypertrack.lib.models.ErrorResponse;
+import com.hypertrack.lib.models.SuccessResponse;
 
 import java.util.Map;
 
@@ -119,6 +126,10 @@ public class MainFragment extends Fragment implements LocationProvider.LocationC
     public void onPause() {
         super.onPause();
 
+        // Stop HyperTrack SDK
+        HyperTrack.stopTracking();
+
+
     }
 
     @OnItemSelected(R.id.emergency_type_spinner)
@@ -145,17 +156,70 @@ public class MainFragment extends Fragment implements LocationProvider.LocationC
         );
     }
 
-    
+
+    /**
+     * Call this method when user has successfully logged in
+     */
+    private void startTrackingLocationHyperLoop() {
+        HyperTrack.startTracking(new HyperTrackCallback() {
+            @Override
+            public void onSuccess(@NonNull SuccessResponse successResponse) {
+                // Hide Login Button loader
+
+                //com.hypertrack.lib.models.User user = (com.hypertrack.lib.models.User) successResponse.getResponseObject();
+                getCurrentUserLocation();
+            }
+
+            @Override
+            public void onError(@NonNull ErrorResponse errorResponse) {
+                // Hide Login Button loader
+                progressBar.setVisibility(View.INVISIBLE);
+                Toast.makeText(WalkWayzApplication.getAppContext(),
+                        R.string.hyper_track_location_failure,
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
 
 
-    private void timerComplete(){
-        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    private void updateUserLocalUserLocation(Location location){
+        UserLocation userLocation = new UserLocation(location.getLatitude()
+                ,location.getLongitude());
+        User.getInstance().setLocation(userLocation);
+    }
+
+
+    private void getCurrentUserLocation(){
+        HyperTrack.getCurrentLocation(new HyperTrackCallback() {
+            @Override
+            public void onSuccess(@NonNull SuccessResponse successResponse) {
+                Location location = (Location) successResponse.getResponseObject();
+                updateUserLocalUserLocation(location);
+
+                updateBackendless();
+            }
+
+            @Override
+            public void onError(@NonNull ErrorResponse errorResponse) {
+                // Hide Login Button loader
+                progressBar.setVisibility(View.INVISIBLE);
+                Toast.makeText(WalkWayzApplication.getAppContext(),
+                        R.string.hyper_track_location_failure,
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+    private void updateBackendless(){
         BackendlessManager.getInstance().emergencyCall(spinnerEmergencyTypes[currentIndexOfEmergency],
                 new BackendlessManager.BackendlessEmergencyCallback(){
                        @Override
                        public void callbackSuccess(Map response) {
                            progressBar.setVisibility(View.INVISIBLE);
-                           Snackbar.make(progressBar, R.string.main_fragment_emergency_success,
+                           Snackbar.make(progressBar,
+                                   R.string.main_fragment_emergency_success,
                                    Snackbar.LENGTH_LONG).show();
                        }
 
@@ -182,7 +246,8 @@ public class MainFragment extends Fragment implements LocationProvider.LocationC
             }
             public void onFinish() {
                 if(dialog.isShowing()){
-                    timerComplete();
+                    progressBar.setVisibility(View.VISIBLE);
+                    startTrackingLocationHyperLoop();
                 }
                 dialog.dismiss();
             }

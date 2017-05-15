@@ -78,8 +78,8 @@ public class BackendlessManager {
 
         BackendlessUser user = getCurrentUser();
         emergencyInfo.put( USER, getCurrentUser());
-        GeoPoint geoPoint = new GeoPoint(3.22,
-                23.4445);
+        GeoPoint geoPoint = new GeoPoint(User.getInstance().getLocation().getLatitude(),
+                User.getInstance().getLocation().getLongitude());
         user.setProperty(LOCATION, geoPoint);
         Backendless.Persistence.of( EMERGENCY ).save( emergencyInfo, new AsyncCallback<Map>() {
             public void handleResponse( Map response ) {

@@ -129,7 +129,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 getString(R.string.password), new BackendlessCallback(){
                     @Override
                     public void callbackSuccess(BackendlessUser user) {
-                        mProgressView.setVisibility(View.INVISIBLE);
                         User.getInstance().upDateLocalUser(user);
                         hyperTrackLogIn();
                     }
@@ -145,8 +144,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private void goToMainActivity(){
-        Intent intent = MainActivity.newIntent(getApplicationContext());
+        Intent intent = MainActivity
+                .newIntent(WalkWayzApplication.getAppContext())
+                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+        finish();
     }
 
     private boolean mayRequestContacts() {
@@ -257,7 +259,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     @Override
                     public void onError(@NonNull ErrorResponse errorResponse) {
                         // Hide Login Button loader
-
+                        mProgressView.setVisibility(View.INVISIBLE);
                         Toast.makeText(LoginActivity.this, R.string.log_in_falure
                                         + " " + errorResponse.getErrorMessage(),
                                 Toast.LENGTH_SHORT).show();

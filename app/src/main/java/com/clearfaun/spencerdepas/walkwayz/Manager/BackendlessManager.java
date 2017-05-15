@@ -22,16 +22,17 @@ import java.util.Map;
 
 public class BackendlessManager {
 
-    private final String PHONE = "phone";
-    private final String AGE = "age";
-    private final String HEIGHT = "height";
-    private final String LOCATION = "location";
-    private final String EMAIL = "email";
-    private final String NAME = "name";
-    private final String PASSWORD = "password";
-    private final String IMAGE = "image";
-    private final String EMERGENCY = "Emergencies";
-    private final String EMERGENCY_TYPE = "emergency_type";
+    public static final String PHONE = "phone";
+    public static final String AGE = "age";
+    public static final String HEIGHT = "height";
+    public static final String LOCATION = "location";
+    public static final String EMAIL = "email";
+    public static final String NAME = "name";
+    public static final String PASSWORD = "password";
+    public static final String IMAGE = "image";
+    public static final String EMERGENCY = "Emergencies";
+    public static final String EMERGENCY_TYPE = "emergency_type";
+    public static final String ID = "ownerId";
 
     private final String USER = "user";
 

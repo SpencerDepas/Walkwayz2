@@ -98,4 +98,7 @@
 
     <string name="main_fragment_emergency_success">Walkways has been notified expect an emergency response</string>
 
+    <string name="enable_location_settings">Please enable Location Services</string>
+    <string name="log_in_falure">Log in failed, try again.</string>
+
 </resources>

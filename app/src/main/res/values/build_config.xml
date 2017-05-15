@@ -8,6 +8,13 @@
     <string name="backendless_version">v1</string>
 
 
+    <string name="hypertrack_publishable_key">pk_eaae4782d60944eef2bf79d3c53f4e82735ebf9f</string>
+    <string name="hypertrack_secret_key">sk_b2d0323bfbe95109c45f9d00b3157f35cb760698</string>
+    <string name="hypertrack_account_name">id-inc.us/walkwayz/walkwayz.pdf</string>
+
+
+
+
 
     <string name="backendless_server_url">https://api.backendless.com</string>
 

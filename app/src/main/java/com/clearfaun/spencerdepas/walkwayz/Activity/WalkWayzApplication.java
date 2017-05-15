@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.Context;
 
 import com.clearfaun.spencerdepas.walkwayz.Manager.BackendlessManager;
+import com.clearfaun.spencerdepas.walkwayz.R;
+import com.hypertrack.lib.HyperTrack;
 
 /**
  * Created by SpencerDepas on 5/9/17.
@@ -23,6 +25,12 @@ public class WalkWayzApplication extends Application {
 
         backendlessManager = new BackendlessManager();
         backendlessManager.init(getAppContext());
+
+        initHyperTrack();
+    }
+
+    private void initHyperTrack(){
+        HyperTrack.initialize(this, context.getString(R.string.hypertrack_publishable_key));
     }
 
     public static Context getAppContext() {

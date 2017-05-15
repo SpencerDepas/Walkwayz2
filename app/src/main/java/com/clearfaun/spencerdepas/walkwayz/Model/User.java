@@ -1,5 +1,8 @@
 package com.clearfaun.spencerdepas.walkwayz.Model;
 
+import com.backendless.BackendlessUser;
+import com.clearfaun.spencerdepas.walkwayz.Manager.BackendlessManager;
+
 /**
  * Created by SpencerDepas on 5/7/17.
  */
@@ -26,6 +29,16 @@ public class User {
     private String image;
     private String phone = "6466646127";
     private UserLocation location = new UserLocation();
+
+
+    public void upDateLocalUser(BackendlessUser user){
+        setName((String)user.getProperties().get(BackendlessManager.NAME));
+        setEmail((String)user.getProperties().get(BackendlessManager.EMAIL));
+        setPhone(Integer.toString((int)user.getProperties().get(BackendlessManager.PHONE)));
+        setId((String)user.getProperties().get(BackendlessManager.ID));
+        setName((String)user.getProperties().get(BackendlessManager.NAME));
+    }
+
 
     public String getPassword() {
         return password;

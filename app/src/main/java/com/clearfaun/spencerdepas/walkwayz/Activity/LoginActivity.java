@@ -3,6 +3,7 @@ package com.clearfaun.spencerdepas.walkwayz.Activity;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -38,6 +39,10 @@ import com.clearfaun.spencerdepas.walkwayz.Manager.BackendlessCallback;
 import com.clearfaun.spencerdepas.walkwayz.Manager.BackendlessManager;
 import com.clearfaun.spencerdepas.walkwayz.Model.User;
 import com.clearfaun.spencerdepas.walkwayz.R;
+import com.hypertrack.lib.HyperTrack;
+import com.hypertrack.lib.callbacks.HyperTrackCallback;
+import com.hypertrack.lib.models.ErrorResponse;
+import com.hypertrack.lib.models.SuccessResponse;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -125,14 +130,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     @Override
                     public void callbackSuccess(BackendlessUser user) {
                         mProgressView.setVisibility(View.INVISIBLE);
-                        goToMainActivity();
-
+                        User.getInstance().upDateLocalUser(user);
+                        hyperTrackLogIn();
                     }
 
                     @Override
                     public void callbackFailure(BackendlessFault fault) {
                         mProgressView.setVisibility(View.INVISIBLE);
-                        Toast.makeText(LoginActivity.this, "Log in failed, try again.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, R.string.log_in_falure, Toast.LENGTH_SHORT).show();
                     }
                 }
         );
@@ -166,12 +171,54 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         return false;
     }
 
+    private boolean hasRequiredPermissions() {
+        // Check for Location permission
+        if (!HyperTrack.checkLocationPermission(this)) {
+            HyperTrack.requestPermissions(this);
+            return false;
+        }
+
+        // Check for Location settings
+        if (!HyperTrack.checkLocationServices(this)) {
+            HyperTrack.requestLocationServices(this, null);
+            return false;
+        }
+
+        return true;
+    }
+
+
+    private void attemptLogin() {
+       if(hasRequiredPermissions()){
+           logIn();
+       }
+    }
+
     /**
-     * Callback received when a permissions request has been completed.
+     * Handle on Grant Location Permissions request accepted/denied result
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
      */
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions,
+                grantResults);
+
+        if (requestCode == HyperTrack.REQUEST_CODE_LOCATION_PERMISSION) {
+            if (grantResults.length > 0 && grantResults[0]
+                    == PackageManager.PERMISSION_GRANTED) {
+                // Check if Location Settings are enabled to proceed
+                hasRequiredPermissions();
+
+            } else {
+                // Handle Location Permission denied error
+                Toast.makeText(this, "Location Permission denied.",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
         if (requestCode == REQUEST_READ_CONTACTS) {
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 populateAutoComplete();
@@ -179,62 +226,69 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
+    private void hyperTrackLogIn(){
+        /**
+         * Get or Create a User for given lookupId on HyperTrack Server here to
+         * login your user & configure HyperTrack SDK with this generated
+         * HyperTrack UserId.
+         * OR
+         * Implement your API call for User Login and get back a HyperTrack
+         * UserId from your API Server to be configured in the HyperTrack SDK.
+         */
+        HyperTrack.getOrCreateUser(User.getInstance().getName(),
+                User.getInstance().getPhone(),
+                BackendlessManager.getInstance().getCurrentUser().getUserId(),
+                new HyperTrackCallback() {
+                    @Override
+                    public void onSuccess(@NonNull SuccessResponse successResponse) {
+                        // Hide Login Button loader
+                        mProgressView.setVisibility(View.INVISIBLE);
+
+                        com.hypertrack.lib.models.User user = (com.hypertrack.lib.models.User) successResponse.getResponseObject();
+                        // Handle createUser success here, if required
+                        // HyperTrack SDK auto-configures UserId on createUser API call,
+                        // so no need to call HyperTrack.setUserId() API
+
+                        // On UserLogin success
+                        goToMainActivity();
+
+                    }
+
+                    @Override
+                    public void onError(@NonNull ErrorResponse errorResponse) {
+                        // Hide Login Button loader
+
+                        Toast.makeText(LoginActivity.this, R.string.log_in_falure
+                                        + " " + errorResponse.getErrorMessage(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+    }
 
     /**
-     * Attempts to sign in or register the account specified by the login form.
-     * If there are form errors (invalid email, missing fields, etc.), the
-     * errors are presented and no actual login attempt is made.
+     * Handle on Enable Location Services request accepted/denied result
+     * @param requestCode
+     * @param resultCode
      */
-    private void attemptLogin() {
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode,
+                                    Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == HyperTrack.REQUEST_CODE_LOCATION_SERVICES) {
+            if (resultCode == Activity.RESULT_OK) {
+                // Check if Location Settings are enabled to proceed
+                hasRequiredPermissions();
 
-        logIn();
-
-
-//        if (mAuthTask != null) {
-//            return;
-//        }
-//
-//        // Reset errors.
-//        mEmailView.setError(null);
-//        mPasswordView.setError(null);
-//
-//        // Store values at the time of the login attempt.
-//        String email = mEmailView.getText().toString();
-//        String password = mPasswordView.getText().toString();
-//
-//        boolean cancel = false;
-//        View focusView = null;
-//
-//        // Check for a valid password, if the user entered one.
-//        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-//            mPasswordView.setError(getString(R.string.error_invalid_password));
-//            focusView = mPasswordView;
-//            cancel = true;
-//        }
-//
-//        // Check for a valid email address.
-//        if (TextUtils.isEmpty(email)) {
-//            mEmailView.setError(getString(R.string.error_field_required));
-//            focusView = mEmailView;
-//            cancel = true;
-//        } else if (!isEmailValid(email)) {
-//            mEmailView.setError(getString(R.string.error_invalid_email));
-//            focusView = mEmailView;
-//            cancel = true;
-//        }
-//
-//        if (cancel) {
-//            // There was an error; don't attempt login and focus the first
-//            // form field with an error.
-//            focusView.requestFocus();
-//        } else {
-//            // Show a progress spinner, and kick off a background task to
-//            // perform the user login attempt.
-//            showProgress(true);
-//            mAuthTask = new UserLoginTask(email, password);
-//            mAuthTask.execute((Void) null);
-//        }
+            } else {
+                // Handle Enable Location Services request denied error
+                Toast.makeText(this, R.string.enable_location_settings,
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
     }
+
+
 
     private boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic

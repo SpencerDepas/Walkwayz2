@@ -2,6 +2,7 @@ package com.clearfaun.spencerdepas.walkwayz.Fragment;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -19,9 +20,11 @@ import android.widget.TextView;
 import com.backendless.Backendless;
 import com.backendless.BackendlessUser;
 import com.backendless.exceptions.BackendlessFault;
+import com.clearfaun.spencerdepas.walkwayz.Activity.WalkWayzApplication;
 import com.clearfaun.spencerdepas.walkwayz.Manager.BackendlessCallback;
 import com.clearfaun.spencerdepas.walkwayz.Manager.BackendlessManager;
 import com.clearfaun.spencerdepas.walkwayz.R;
+import com.clearfaun.spencerdepas.walkwayz.Service.LocationProvider;
 
 import java.util.Map;
 
@@ -39,7 +42,7 @@ import butterknife.OnItemSelected;
  * Use the {@link MainFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MainFragment extends Fragment {
+public class MainFragment extends Fragment implements LocationProvider.LocationCallback{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -104,6 +107,17 @@ public class MainFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
 
     }
 
@@ -130,6 +144,8 @@ public class MainFragment extends Fragment {
                 }
         );
     }
+
+    
 
 
     private void timerComplete(){
@@ -198,6 +214,11 @@ public class MainFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void handleNewLocation(Location location) {
+
     }
 
 

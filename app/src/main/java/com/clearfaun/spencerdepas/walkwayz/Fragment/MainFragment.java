@@ -273,7 +273,7 @@ public class MainFragment extends Fragment{
         dialog.setTitle("Title...");
         // set the custom dialog components - text, image and button
         TextView text = (TextView) dialog.findViewById(R.id.dialog_text_body);
-        text.setText("Android custom dialog example!");
+        text.setText("After this countdown has been reached the emergency services will be notified");
         final TextView mTextField = (TextView) dialog.findViewById(R.id.dialog_countdown);
         new CountDownTimer(5000, 1000) {
             public void onTick(long millisUntilFinished) {

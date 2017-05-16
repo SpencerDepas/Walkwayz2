@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Toast;
 
+import com.clearfaun.spencerdepas.walkwayz.Adapter.PopupAdapter;
 import com.clearfaun.spencerdepas.walkwayz.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -81,6 +82,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.setInfoWindowAdapter(new PopupAdapter(getLayoutInflater()));
+
     }
 
     private void updateMapCameraLocation( Location location){
@@ -91,9 +94,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void addHardCodedMarkers(){
 
-        mMap.addMarker(new MarkerOptions().position(position1).title("P1").snippet("bum fluff"));
-        mMap.addMarker(new MarkerOptions().position(position2).title("P2"));
-        mMap.addMarker(new MarkerOptions().position(position3).title("P3"));
+        mMap.addMarker(new MarkerOptions().position(position1).title("Agressive indiduel").snippet("On Monday there was an aggressive person who requested I give them money"));
+        mMap.addMarker(new MarkerOptions().position(position2).title("Recent mugging").snippet("Last month somone was mugged"));
+        mMap.addMarker(new MarkerOptions().position(position3).title("Lot's of Herring").snippet("Herring for tree cutting is available"));
 
     }
 

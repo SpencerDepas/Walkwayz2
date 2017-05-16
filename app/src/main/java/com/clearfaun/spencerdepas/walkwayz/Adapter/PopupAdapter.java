@@ -18,7 +18,7 @@ public class PopupAdapter implements GoogleMap.InfoWindowAdapter {
     private View popup=null;
     private LayoutInflater inflater=null;
 
-    PopupAdapter(LayoutInflater inflater) {
+    public PopupAdapter(LayoutInflater inflater) {
         this.inflater=inflater;
     }
 
@@ -31,7 +31,7 @@ public class PopupAdapter implements GoogleMap.InfoWindowAdapter {
     @Override
     public View getInfoContents(Marker marker) {
         if (popup == null) {
-            popup=inflater.inflate(R.layout.popup, null);
+            popup=inflater.inflate(R.layout.map_marker_popup, null);
         }
 
         TextView tv=(TextView)popup.findViewById(R.id.title);

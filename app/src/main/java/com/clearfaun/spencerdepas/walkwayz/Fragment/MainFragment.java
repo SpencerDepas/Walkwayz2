@@ -32,6 +32,7 @@ import com.clearfaun.spencerdepas.walkwayz.R;
 import com.hypertrack.lib.HyperTrack;
 import com.hypertrack.lib.callbacks.HyperTrackCallback;
 import com.hypertrack.lib.models.ErrorResponse;
+import com.hypertrack.lib.models.Place;
 import com.hypertrack.lib.models.SuccessResponse;
 
 import java.util.Map;
@@ -204,6 +205,8 @@ public class MainFragment extends Fragment{
                 switchVisualState(ALERT_MODE);
                 //com.hypertrack.lib.models.User user = (com.hypertrack.lib.models.User) successResponse.getResponseObject();
                 getCurrentUserLocation();
+
+
             }
 
             @Override
@@ -225,14 +228,14 @@ public class MainFragment extends Fragment{
         User.getInstance().setLocation(userLocation);
     }
 
-
     private void getCurrentUserLocation(){
         HyperTrack.getCurrentLocation(new HyperTrackCallback() {
             @Override
             public void onSuccess(@NonNull SuccessResponse successResponse) {
                 Location location = (Location) successResponse.getResponseObject();
                 updateUserLocalUserLocation(location);
-
+                Place expectedPlace = new Place().setLocation(location.getLatitude(), location.getLongitude())
+                        .setName("Emergency button pressed");
                 updateBackendless();
             }
 

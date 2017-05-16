@@ -1,8 +1,10 @@
 package com.clearfaun.spencerdepas.walkwayz.Activity;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -13,6 +15,9 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.clearfaun.spencerdepas.walkwayz.Adapter.PopupAdapter;
@@ -26,17 +31,20 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.hypertrack.lib.HyperTrack;
 import com.hypertrack.lib.callbacks.HyperTrackCallback;
 import com.hypertrack.lib.models.ErrorResponse;
+import com.hypertrack.lib.models.Place;
 import com.hypertrack.lib.models.SuccessResponse;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    private Toolbar toolbar;
 
     LatLng position1 = new LatLng(54.5312293, 18.5193164);
     LatLng position2 = new LatLng(54.53332, 18.5250559);
     LatLng position3 = new LatLng(54.5161936, 18.5396568);
 
-
+    String markerTittle = "";
+    String markerDetail = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +65,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void setUpToolBar(){
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Walkwayz");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -83,13 +91,63 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setInfoWindowAdapter(new PopupAdapter(getLayoutInflater()));
+        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(LatLng arg0) {
+                addMarkerDialog(arg0);
+            }
+        });
+    }
 
+
+    private void addMarkerDialog(final LatLng arg0) {
+        final Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.maps_add_marker_dialog);
+        dialog.setTitle("Title...");
+        // set the custom dialog components - text, image and button
+        final EditText tiitle = (EditText) dialog.findViewById(R.id.place_edit_text);
+        final EditText detail = (EditText) dialog.findViewById(R.id.place_detail_edit_text);
+
+        Button dialogButtonOK = (Button) dialog.findViewById(R.id.dialogButtonOK);
+        dialogButtonOK.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mMap.addMarker(new MarkerOptions().position(arg0).title(tiitle.getText().toString()).snippet(detail.getText().toString()));
+                dialog.dismiss();
+
+                Place expectedPlace = new Place().setLocation(arg0.latitude, arg0.longitude)
+                        .setAddress(tiitle.getText().toString())
+                        .setName(detail.getText().toString());
+            }
+        });
+
+        Button dialogCancel = (Button) dialog.findViewById(R.id.dialogButtonCancel);
+        // if button is clicked, close the custom dialog
+        dialogCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 
     private void updateMapCameraLocation( Location location){
         LatLng poland = new LatLng(location.getLatitude(), location.getLongitude());
         mMap.setMyLocationEnabled(true);
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(poland,14));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(poland,14), new GoogleMap.CancelableCallback() {
+
+            @Override
+            public void onFinish() {
+                Snackbar snackbar = Snackbar
+                        .make(toolbar, "To Add a marker long press on the map", Snackbar.LENGTH_LONG);
+                snackbar.show();
+            }
+
+            @Override
+            public void onCancel() {
+            }
+        });
     }
 
     private void addHardCodedMarkers(){

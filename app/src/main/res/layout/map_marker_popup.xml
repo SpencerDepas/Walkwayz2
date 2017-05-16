@@ -23,6 +23,7 @@
 
             <ImageView
                 android:id="@+id/icon"
+                android:visibility="gone"
                 android:layout_toRightOf="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -33,7 +34,7 @@
 
 
         </RelativeLayout>
-        
+
         <TextView
             android:layout_width="150dp"
             android:id="@+id/snippet"

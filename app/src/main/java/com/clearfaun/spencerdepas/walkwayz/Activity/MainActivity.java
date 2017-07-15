@@ -11,15 +11,19 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.clearfaun.spencerdepas.walkwayz.Fragment.EmergencyTypeFragment;
 import com.clearfaun.spencerdepas.walkwayz.Fragment.MainFragment;
 import com.clearfaun.spencerdepas.walkwayz.R;
 
 public class MainActivity extends BaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener, MainFragment.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        MainFragment.MainFragmentListener ,EmergencyTypeFragment.OnFragmentInteractionListener{
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,6 +127,13 @@ public class MainActivity extends BaseActivity
         return true;
     }
 
+
+    @Override
+    public void OnEmergencyFabPressed() {
+        Log.d("","");
+        EmergencyTypeFragment EmergencyTypeFragment = new EmergencyTypeFragment();
+        addFragment(EmergencyTypeFragment);
+    }
 
     @Override
     public void onFragmentInteraction(Uri uri) {

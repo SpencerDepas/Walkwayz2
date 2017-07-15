@@ -46,7 +46,7 @@ import butterknife.OnItemSelected;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link MainFragment.OnFragmentInteractionListener} interface
+ * {@link MainFragmentListener} interface
  * to handle interaction events.
  * Use the {@link MainFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -76,7 +76,7 @@ public class MainFragment extends Fragment{
     private String mParam1;
     private String mParam2;
 
-    private OnFragmentInteractionListener mListener;
+    private MainFragmentListener mListener;
 
 
 
@@ -135,7 +135,9 @@ public class MainFragment extends Fragment{
     @SuppressWarnings("unused")
     @OnClick(R.id.emergency_fab)
     public void emergencyFab(View view) {
-        showLocationDialog();
+
+
+         mListener.OnEmergencyFabPressed();
     }
 
     @Override
@@ -305,11 +307,11 @@ public class MainFragment extends Fragment{
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof MainFragmentListener) {
+            mListener = (MainFragmentListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement MainFragmentListener");
         }
     }
 
@@ -320,8 +322,7 @@ public class MainFragment extends Fragment{
     }
 
 
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    public interface MainFragmentListener {
+        void OnEmergencyFabPressed();
     }
 }

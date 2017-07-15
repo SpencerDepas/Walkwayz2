@@ -3,7 +3,6 @@ package com.clearfaun.spencerdepas.walkwayz.Fragment;
 import android.app.Dialog;
 import android.content.Context;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
@@ -54,7 +53,7 @@ import butterknife.OnItemSelected;
 public class MainFragment extends Fragment{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_EMERGENCY_TYPE = "ARG_EMERGENCY_TYPE";
     private static final String ARG_PARAM2 = "param2";
 
     @BindView(R.id.main_progress) ProgressBar progressBar;
@@ -73,7 +72,7 @@ public class MainFragment extends Fragment{
 
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
+    private String emergencyType;
     private String mParam2;
 
     private MainFragmentListener mListener;
@@ -87,7 +86,7 @@ public class MainFragment extends Fragment{
     public static MainFragment newInstance(String param1, String param2) {
         MainFragment fragment = new MainFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_EMERGENCY_TYPE, param1);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
@@ -97,6 +96,13 @@ public class MainFragment extends Fragment{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getExtras();
+
+    }
+
+    private void maybeTriggerEmergencyMode(){
+        if(!emergencyType.isEmpty()){
+            alertMode();
+        }
     }
 
     private void switchVisualState(String mode){
@@ -126,7 +132,7 @@ public class MainFragment extends Fragment{
 
     private void getExtras(){
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
+            emergencyType = getArguments().getString(ARG_EMERGENCY_TYPE);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
@@ -136,7 +142,6 @@ public class MainFragment extends Fragment{
     @OnClick(R.id.emergency_fab)
     public void emergencyFab(View view) {
 
-
          mListener.OnEmergencyFabPressed();
     }
 
@@ -145,6 +150,11 @@ public class MainFragment extends Fragment{
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
         ButterKnife.bind(this, view);
+
+
+        maybeTriggerEmergencyMode();
+
+        
         return view;
     }
 

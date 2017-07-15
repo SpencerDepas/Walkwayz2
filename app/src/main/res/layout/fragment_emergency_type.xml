@@ -16,16 +16,15 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@color/colorPrimary"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Police"
-                android:textAllCaps="true"
-                android:textColor="@color/white"
-                android:textSize="40sp"
-                android:textStyle="bold" />
+
+            <include
+                layout="@layout/view_police_section"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
 
         </LinearLayout>
 
@@ -37,33 +36,32 @@
             android:background="@color/white"
             android:gravity="center">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Health"
-                android:textAllCaps="true"
-                android:textColor="@color/light_black"
-                android:textSize="40sp"
-                android:textStyle="bold" />
+            <include
+                layout="@layout/view_health_selection"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:orientation="vertical"
+            android:id="@+id/line"
+            android:background="@color/light_black" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:gravity="center"
             android:layout_weight="1"
-            android:background="@color/colorPrimary"
-            android:gravity="center">
+            android:background="@color/white">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Fire"
-                android:textAllCaps="true"
-                android:textColor="@color/white"
-                android:textSize="40sp"
-                android:textStyle="bold" />
+            <include
+                layout="@layout/view_fire_selection"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
         </LinearLayout>
 
@@ -71,11 +69,12 @@
 
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/android_floating_action_button_fab"
+        android:id="@+id/timer_fab"
         android:layout_width="85dp"
         android:layout_height="85dp"
         android:layout_margin="20dp"
         android:clickable="true"
+        android:visibility="gone"
         app:backgroundTint="@color/colorAccent"
         app:elevation="4dp"
         app:layout_anchor="@id/police_view"

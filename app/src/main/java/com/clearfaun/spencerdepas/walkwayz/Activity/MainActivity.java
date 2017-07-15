@@ -13,7 +13,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -144,7 +143,7 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
-
+    public void onEmergencySelected(String emergency) {
+        addFragment(MainFragment.newInstance(emergency, ""));
     }
 }

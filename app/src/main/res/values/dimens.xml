@@ -17,4 +17,6 @@
 
     <dimen name="fragment_main_emergency_icon_subtext_text_size">16sp</dimen>
     <dimen name="fragment_main_emergency_text_size">16sp</dimen>
+    <dimen name="emergency_detail_size">70dp</dimen>
+
 </resources>

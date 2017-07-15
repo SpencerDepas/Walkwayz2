@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fire_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <Button
+            android:id="@+id/fire_selection_button"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="Fire"
+            android:textAllCaps="true"
+            android:textColor="@color/light_black"
+            android:textSize="100sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:id="@+id/fire_fab_button_holder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/detail_fab_one"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        app:backgroundTint="@color/colorPrimary"
+                        app:elevation="4dp"
+                        app:srcCompat="@drawable/ic_warning_white_24px" />
+
+
+                    <TextView
+                        android:id="@+id/detail_emergency_textview_one"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/emergency_detail_size"
+                        android:layout_margin="16dp"
+                        android:gravity="center"
+                        android:textAllCaps="true"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/detail_fab_two"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        app:backgroundTint="@color/colorPrimary"
+                        app:elevation="4dp"
+                        app:srcCompat="@drawable/ic_warning_white_24px" />
+
+                    <TextView
+                        android:id="@+id/detail_emergency_textview_two"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/emergency_detail_size"
+                        android:layout_margin="16dp"
+                        android:gravity="center"
+                        android:textAllCaps="true"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/detail_fab_three"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        app:backgroundTint="@color/colorPrimary"
+                        app:elevation="4dp"
+                        app:srcCompat="@drawable/ic_warning_white_24px" />
+
+                    <TextView
+                        android:id="@+id/detail_emergency_textview_three"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/emergency_detail_size"
+                        android:layout_margin="16dp"
+                        android:gravity="center"
+                        android:textAllCaps="true"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+    </FrameLayout>
+
+</LinearLayout>

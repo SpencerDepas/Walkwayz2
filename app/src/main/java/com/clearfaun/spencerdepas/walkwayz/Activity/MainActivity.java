@@ -1,5 +1,6 @@
 package com.clearfaun.spencerdepas.walkwayz.Activity;
 
+
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -7,6 +8,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -16,13 +18,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.clearfaun.spencerdepas.walkwayz.Fragment.EmergencyTypeFragment;
+import com.clearfaun.spencerdepas.walkwayz.Fragment.EmergencyTypeSelectionFragment;
 import com.clearfaun.spencerdepas.walkwayz.Fragment.MainFragment;
 import com.clearfaun.spencerdepas.walkwayz.R;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        MainFragment.MainFragmentListener ,EmergencyTypeFragment.OnFragmentInteractionListener{
+        MainFragment.MainFragmentListener ,EmergencyTypeSelectionFragment.OnFragmentInteractionListener{
 
 
     @Override
@@ -65,10 +67,17 @@ public class MainActivity extends BaseActivity
 
     @Override
     public void onBackPressed() {
+
+        String string = "string";
+        Fragment currentFragment = this.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
+        }if(currentFragment instanceof EmergencyTypeSelectionFragment){
+            addFragment(MainFragment.newInstance("", ""));
+        } else{
             super.onBackPressed();
         }
     }
@@ -130,8 +139,7 @@ public class MainActivity extends BaseActivity
 
     @Override
     public void OnEmergencyFabPressed() {
-        Log.d("","");
-        EmergencyTypeFragment EmergencyTypeFragment = new EmergencyTypeFragment();
+        EmergencyTypeSelectionFragment EmergencyTypeFragment = new EmergencyTypeSelectionFragment();
         addFragment(EmergencyTypeFragment);
     }
 

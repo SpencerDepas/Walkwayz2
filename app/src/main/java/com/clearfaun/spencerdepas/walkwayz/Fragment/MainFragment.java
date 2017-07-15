@@ -121,7 +121,7 @@ public class MainFragment extends Fragment{
     private void inactiveMode(){
         background.setBackgroundColor(
                 ContextCompat.getColor(WalkWayzApplication.getAppContext(), R.color.colorPrimary));
-        iconSubText.setText("we've got your back");
+        iconSubText.setText("We have your back");
     }
 
     private void getExtras(){

@@ -57,7 +57,6 @@ public class MainFragment extends Fragment{
     private static final String ARG_PARAM2 = "param2";
 
     @BindView(R.id.main_progress) ProgressBar progressBar;
-    @BindView(R.id.emergency_type_spinner) Spinner spinner;
     @BindView(R.id.help_type) TextView helpTypeTextView;
     @BindView(R.id.background) RelativeLayout background;
     @BindView(R.id.icon_subtext) TextView iconSubText;
@@ -101,7 +100,7 @@ public class MainFragment extends Fragment{
 
     private void maybeTriggerEmergencyMode(){
         if(!emergencyType.isEmpty()){
-            //alertMode();
+            helpTypeTextView.setText(emergencyType);
             progressBar.setVisibility(View.VISIBLE);
             startTrackingLocationHyperLoop();
         }
@@ -174,13 +173,6 @@ public class MainFragment extends Fragment{
         // Stop HyperTrack SDK
         HyperTrack.stopTracking();
         switchVisualState(INACTIVE_MODE);
-
-    }
-
-    @OnItemSelected(R.id.emergency_type_spinner)
-    public void spinnerItemSelected(Spinner spinner, int position) {
-        currentIndexOfEmergency = position;
-        helpTypeTextView.setText(spinnerEmergencyTypes[currentIndexOfEmergency]);
 
     }
 
@@ -259,7 +251,7 @@ public class MainFragment extends Fragment{
     }
 
     private void updateBackendless(){
-        BackendlessManager.getInstance().emergencyCall(spinnerEmergencyTypes[currentIndexOfEmergency],
+        BackendlessManager.getInstance().emergencyCall(emergencyType,
                 new BackendlessManager.BackendlessEmergencyCallback(){
                        @Override
                        public void callbackSuccess(Map response) {

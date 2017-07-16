@@ -61,7 +61,7 @@
                         android:id="@+id/detail_emergency_textview_one"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/emergency_detail_size"
-                        android:layout_margin="16dp"
+                        android:layout_margin="8dp"
                         android:gravity="center"
                         android:textAllCaps="true"
                         android:textColor="@color/colorAccent"
@@ -85,13 +85,13 @@
                         android:clickable="true"
                         app:backgroundTint="@color/colorPrimary"
                         app:elevation="4dp"
-                        app:srcCompat="@drawable/ic_warning_white_24px" />
+                        app:srcCompat="@drawable/ic_flash_on_black_24dp" />
 
                     <TextView
                         android:id="@+id/detail_emergency_textview_two"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/emergency_detail_size"
-                        android:layout_margin="16dp"
+                        android:layout_margin="8dp"
                         android:gravity="center"
                         android:textAllCaps="true"
                         android:textColor="@color/colorAccent"
@@ -115,13 +115,13 @@
                         android:clickable="true"
                         app:backgroundTint="@color/colorPrimary"
                         app:elevation="4dp"
-                        app:srcCompat="@drawable/ic_warning_white_24px" />
+                        app:srcCompat="@drawable/ic_block_black_24dp" />
 
                     <TextView
                         android:id="@+id/detail_emergency_textview_three"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/emergency_detail_size"
-                        android:layout_margin="16dp"
+                        android:layout_margin="8dp"
                         android:gravity="center"
                         android:textAllCaps="true"
                         android:textColor="@color/colorAccent"

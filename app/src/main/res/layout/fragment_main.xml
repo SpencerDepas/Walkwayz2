@@ -36,7 +36,7 @@
         android:layout_centerInParent="true"
         android:layout_margin="16dp"
         android:gravity="center"
-        android:text="We'v got your back"
+        android:text="@string/we_have_got_your_back"
         android:textColor="@color/white"
         android:textSize="@dimen/fragment_main_emergency_icon_subtext_text_size" />
 

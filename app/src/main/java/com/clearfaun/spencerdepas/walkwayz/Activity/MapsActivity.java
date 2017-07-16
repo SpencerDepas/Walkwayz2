@@ -104,19 +104,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         final Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.maps_add_marker_dialog);
         dialog.setTitle("Title...");
-        // set the custom dialog components - text, image and button
-        final EditText tiitle = (EditText) dialog.findViewById(R.id.place_edit_text);
+
+        final EditText tittle = (EditText) dialog.findViewById(R.id.place_edit_text);
         final EditText detail = (EditText) dialog.findViewById(R.id.place_detail_edit_text);
 
         Button dialogButtonOK = (Button) dialog.findViewById(R.id.dialogButtonOK);
         dialogButtonOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mMap.addMarker(new MarkerOptions().position(arg0).title(tiitle.getText().toString()).snippet(detail.getText().toString()));
+                mMap.addMarker(new MarkerOptions().position(arg0).title(tittle.getText().toString()).snippet(detail.getText().toString()));
                 dialog.dismiss();
 
                 Place expectedPlace = new Place().setLocation(arg0.latitude, arg0.longitude)
-                        .setAddress(tiitle.getText().toString())
+                        .setAddress(tittle.getText().toString())
                         .setName(detail.getText().toString());
             }
         });

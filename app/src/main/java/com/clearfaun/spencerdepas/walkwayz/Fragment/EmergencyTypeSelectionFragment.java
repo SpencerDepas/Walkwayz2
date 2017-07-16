@@ -39,7 +39,6 @@ public class EmergencyTypeSelectionFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private String emergencyType;
 
     @BindView(R.id.timer_fab)
     FloatingActionButton fab;
@@ -158,7 +157,6 @@ public class EmergencyTypeSelectionFragment extends Fragment {
     }
 
     private void setDetailEmergency(String emergencyType){
-        emergencyType = emergencyType;
         policeMainButton.setText(emergencyType);
         healthContainer.setBackgroundResource(R.color.colorPrimary);
         healthMainButton.setVisibility(View.INVISIBLE);
@@ -189,12 +187,9 @@ public class EmergencyTypeSelectionFragment extends Fragment {
             }
             public void onFinish() {
                 fab.setImageBitmap(ImageUtil.textAsBitmap("" + 0, 100, Color.WHITE));
+                emrgencySelected("Emergency");
 
-//                if(dialog.isShowing()){
-//                    progressBar.setVisibility(View.VISIBLE);
-//                    startTrackingLocationHyperLoop();
-//                }
-//                dialog.dismiss();
+
             }
         }.start();
 

@@ -102,5 +102,6 @@
 
     <string name="enable_location_settings">Please enable Location Services</string>
     <string name="log_in_falure">Log in failed, try again.</string>
+    <string name="we_have_got_your_back">We have got your back</string>
 
 </resources>

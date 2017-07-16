@@ -14,6 +14,7 @@ import com.clearfaun.spencerdepas.walkwayz.Activity.WalkWayzApplication;
 import com.clearfaun.spencerdepas.walkwayz.Model.User;
 import com.clearfaun.spencerdepas.walkwayz.R;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,6 +40,8 @@ public class BackendlessManager {
     private static final String HYPER_TRACK_USER_ID = "hypertrackID";
     private static final String GEO_CATEGORY_MARKER_ID = "GEO_CATEGORY_MARKER_ID";
     public static final String OBJECT_ID = "objectId";
+    public static final String MARKER_TITTLE = "marker_tittle";
+    public static final String MARKER_DETAIL = "marker_detail";
 
 
     public static final String ID = "ownerId";
@@ -122,21 +125,6 @@ public class BackendlessManager {
         });
     }
 
-    public interface BackendlessEmergencyCallback {
-        public void callbackSuccess(Map response);
-        public void callbackFailure(BackendlessFault fault);
-    }
-
-    public interface BackendlessPostMarkerCallback {
-        public void callbackSuccess(GeoPoint response);
-        public void callbackFailure(BackendlessFault fault);
-    }
-
-    public interface BackendlessGetMarkerCallback {
-        public void callbackSuccess(BackendlessCollection<GeoPoint> response);
-        public void callbackFailure(BackendlessFault fault);
-    }
-
     public void saveGlobleGeoLocation(String tittle, String detail, LatLng location,
                                       final BackendlessPostMarkerCallback backendlessCallback) {
 
@@ -144,8 +132,8 @@ public class BackendlessManager {
         categories.add(GEO_CATEGORY_MARKER_ID);
 
         Map<String, Object> meta = new HashMap<String, Object>();
-        meta.put("marker_tittle", tittle);
-        meta.put("marker_detail", detail);
+        meta.put(MARKER_TITTLE, tittle);
+        meta.put(MARKER_DETAIL, detail);
 
         Backendless.Geo.savePoint(location.latitude, location.longitude, categories, meta,
                 new AsyncCallback<GeoPoint>() {
@@ -180,6 +168,21 @@ public class BackendlessManager {
     }
 
 
+    public void deleteMarker(GeoPoint marker, final BackendlessDeleteMarkerCallback backendlessDeleteMarkerCallback){
+
+        Backendless.Geo.removePoint(marker, new AsyncCallback<Void>() {
+            @Override
+            public void handleResponse(Void response) {
+                backendlessDeleteMarkerCallback.callbackSuccess(response);
+            }
+
+            @Override
+            public void handleFault(BackendlessFault fault) {
+                backendlessDeleteMarkerCallback.callbackFailure(fault);
+            }
+        } );
+
+    }
 
     public void registerUser(HashMap userInfo){
         //userInfo.put("objectId", USER_DATA);
@@ -188,19 +191,36 @@ public class BackendlessManager {
         user.setProperty( "bacon", true );
         user.setPassword( "iAmWatchingU" );
 
-        Backendless.UserService.register( user, new AsyncCallback<BackendlessUser>()
-        {
-            public void handleResponse( BackendlessUser registeredUser )
-            {
+        Backendless.UserService.register( user, new AsyncCallback<BackendlessUser>() {
+            public void handleResponse( BackendlessUser registeredUser ) {
                 // user has been registered and now can login
 
             }
 
-            public void handleFault( BackendlessFault fault )
-            {
+            public void handleFault( BackendlessFault fault ) {
                 // an error has occurred, the error code can be retrieved with fault.getCode()
             }
         } );
+    }
+
+    public interface BackendlessEmergencyCallback {
+        void callbackSuccess(Map response);
+        void callbackFailure(BackendlessFault fault);
+    }
+
+    public interface BackendlessPostMarkerCallback {
+        void callbackSuccess(GeoPoint response);
+        void callbackFailure(BackendlessFault fault);
+    }
+
+    public interface BackendlessGetMarkerCallback {
+        void callbackSuccess(BackendlessCollection<GeoPoint> response);
+        void callbackFailure(BackendlessFault fault);
+    }
+
+    public interface BackendlessDeleteMarkerCallback {
+        void callbackSuccess(Void response);
+        void callbackFailure(BackendlessFault fault);
     }
 
 

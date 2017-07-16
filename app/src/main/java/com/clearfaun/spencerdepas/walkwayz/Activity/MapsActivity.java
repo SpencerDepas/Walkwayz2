@@ -4,11 +4,12 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,12 +19,14 @@ import com.backendless.exceptions.BackendlessFault;
 import com.backendless.geo.GeoPoint;
 import com.clearfaun.spencerdepas.walkwayz.Adapter.PopupAdapter;
 import com.clearfaun.spencerdepas.walkwayz.Manager.BackendlessManager;
+import com.clearfaun.spencerdepas.walkwayz.Manager.MarkerManager;
 import com.clearfaun.spencerdepas.walkwayz.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.hypertrack.lib.HyperTrack;
 import com.hypertrack.lib.callbacks.HyperTrackCallback;
@@ -31,9 +34,9 @@ import com.hypertrack.lib.models.ErrorResponse;
 import com.hypertrack.lib.models.Place;
 import com.hypertrack.lib.models.SuccessResponse;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, MarkerManager.DialogPopupListener {
 
-    private GoogleMap mMap;
+    private static GoogleMap mMap;
     private Toolbar toolbar;
 
     LatLng position1 = new LatLng(54.5312293, 18.5193164);
@@ -42,6 +45,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     String markerTittle = "";
     String markerDetail = "";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,17 +56,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         getCurrentUserLocation();
         setUpMap();
+        MarkerManager.getInstance().init(this);
+        getMarkersFromBackendless();
 
-        getMarkers();
 
     }
 
-    private void getMarkers(){
+    private void getMarkersFromBackendless(){
         BackendlessManager.getInstance().getGlobalMarkers(
                 new BackendlessManager.BackendlessGetMarkerCallback(){
                     @Override
                     public void callbackSuccess(BackendlessCollection<GeoPoint> response) {
 
+                        MarkerManager.getInstance().addMarkerToMap(response.getData());
+
+                        //BackendlessManager.getInstance().deleteMarker(response.getData().get(0));
                     }
 
                     @Override
@@ -71,6 +79,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                 }
         );
+    }
+
+    public static GoogleMap getGmap(){
+        return mMap;
     }
 
     private void setUpMap(){
@@ -127,14 +139,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         dialogButtonOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mMap.addMarker(new MarkerOptions().position(arg0)
-                        .title(tittle.getText().toString()).snippet(detail.getText().toString()));
+
                 dialog.dismiss();
-
-                Place expectedPlace = new Place().setLocation(arg0.latitude, arg0.longitude)
-                        .setAddress(tittle.getText().toString())
-                        .setName(detail.getText().toString());
-
                 sendMarkerToBackendless(tittle.getText().toString(),detail.getText().toString(),  arg0);
             }
         });
@@ -156,6 +162,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     @Override
                     public void callbackSuccess(GeoPoint geoPoint) {
 
+                        addMarkerToMap(geoPoint);
                     }
 
                     @Override
@@ -165,6 +172,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
         );
     }
+
+    private void addMarkerToMap(GeoPoint geoPoint){
+        MarkerManager.getInstance().addMarkerToMap(geoPoint);
+    }
+
 
     private void updateMapCameraLocation( Location location){
         LatLng poland = new LatLng(location.getLatitude(), location.getLongitude());
@@ -184,21 +196,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
-    private void addHardCodedMarkers(){
-
-        mMap.addMarker(new MarkerOptions().position(position1).title("Agressive indiduel").snippet("On Monday there was an aggressive person who requested I give them money"));
-        mMap.addMarker(new MarkerOptions().position(position2).title("Recent mugging").snippet("Last month somone was mugged"));
-        mMap.addMarker(new MarkerOptions().position(position3).title("Lot's of Herring").snippet("Herring for tree cutting is available"));
-
-    }
-
     private void getCurrentUserLocation(){
         HyperTrack.getCurrentLocation(new HyperTrackCallback() {
             @Override
             public void onSuccess(@NonNull SuccessResponse successResponse) {
                 Location location = (Location) successResponse.getResponseObject();
                 updateMapCameraLocation(location);
-                addHardCodedMarkers();
             }
 
             @Override
@@ -206,5 +209,35 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             }
         });
+    }
+
+    @Override
+    public void onPopupClicked(Marker pin) {
+
+
+        GeoPoint selectedGeoPoint = MarkerManager.getInstance().markerToGeoPoint(pin);
+        if(selectedGeoPoint != null){
+
+            deleteMarkerOnServer(selectedGeoPoint);
+        }
+
+    }
+
+    private void deleteMarkerOnServer(final GeoPoint selectedGeoPoint){
+        BackendlessManager.getInstance()
+                .deleteMarker(selectedGeoPoint, new BackendlessManager.BackendlessDeleteMarkerCallback() {
+                            @Override
+                            public void callbackSuccess(Void response) {
+                                Log.d("e", "");
+                                MarkerManager.getInstance().deleteMarkerOnMap(selectedGeoPoint);
+                                Snackbar.make(toolbar, "Marker deleted", Snackbar.LENGTH_LONG);
+                            }
+
+                            @Override
+                            public void callbackFailure(BackendlessFault fault) {
+                                Snackbar.make(toolbar, "Error deleting. Try again soon", Snackbar.LENGTH_LONG);
+                            }
+                        }
+                );
     }
 }

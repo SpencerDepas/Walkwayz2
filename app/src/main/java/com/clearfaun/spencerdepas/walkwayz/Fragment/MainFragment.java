@@ -101,7 +101,9 @@ public class MainFragment extends Fragment{
 
     private void maybeTriggerEmergencyMode(){
         if(!emergencyType.isEmpty()){
-            alertMode();
+            //alertMode();
+            progressBar.setVisibility(View.VISIBLE);
+            startTrackingLocationHyperLoop();
         }
     }
 
@@ -143,6 +145,8 @@ public class MainFragment extends Fragment{
     public void emergencyFab(View view) {
 
          mListener.OnEmergencyFabPressed();
+        //showLocationDialog();
+
     }
 
     @Override
@@ -152,9 +156,6 @@ public class MainFragment extends Fragment{
         ButterKnife.bind(this, view);
 
 
-        maybeTriggerEmergencyMode();
-
-        
         return view;
     }
 
@@ -162,14 +163,9 @@ public class MainFragment extends Fragment{
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
+        maybeTriggerEmergencyMode();
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-    }
 
     @Override
     public void onPause() {

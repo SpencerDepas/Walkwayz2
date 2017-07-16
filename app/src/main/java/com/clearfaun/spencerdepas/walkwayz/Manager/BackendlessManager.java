@@ -1,15 +1,19 @@
 package com.clearfaun.spencerdepas.walkwayz.Manager;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.backendless.Backendless;
+import com.backendless.BackendlessCollection;
 import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
 import com.backendless.exceptions.BackendlessFault;
+import com.backendless.geo.BackendlessGeoQuery;
 import com.backendless.geo.GeoPoint;
 import com.clearfaun.spencerdepas.walkwayz.Activity.WalkWayzApplication;
 import com.clearfaun.spencerdepas.walkwayz.Model.User;
 import com.clearfaun.spencerdepas.walkwayz.R;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,21 +27,21 @@ import java.util.Map;
 public class BackendlessManager {
 
     public static final String PHONE = "phone";
-    public static final String AGE = "age";
-    public static final String HEIGHT = "height";
-    public static final String LOCATION = "location";
+    private static final String AGE = "age";
+    private static final String HEIGHT = "height";
+    private static final String LOCATION = "location";
     public static final String EMAIL = "email";
     public static final String NAME = "name";
     public static final String PASSWORD = "password";
     public static final String IMAGE = "image";
-    public static final String EMERGENCY = "Emergencies";
-    public static final String EMERGENCY_TYPE = "emergency_type";
-    public static final String HYPER_TRACK_USER_ID = "hypertrackID";
+    private static final String EMERGENCY = "Emergencies";
+    private static final String EMERGENCY_TYPE = "emergency_type";
+    private static final String HYPER_TRACK_USER_ID = "hypertrackID";
+    private static final String GEO_CATEGORY_MARKER_ID = "GEO_CATEGORY_MARKER_ID";
     public static final String OBJECT_ID = "objectId";
 
 
     public static final String ID = "ownerId";
-
     private final String USER = "user";
 
 
@@ -123,30 +127,58 @@ public class BackendlessManager {
         public void callbackFailure(BackendlessFault fault);
     }
 
+    public interface BackendlessPostMarkerCallback {
+        public void callbackSuccess(GeoPoint response);
+        public void callbackFailure(BackendlessFault fault);
+    }
 
+    public interface BackendlessGetMarkerCallback {
+        public void callbackSuccess(BackendlessCollection<GeoPoint> response);
+        public void callbackFailure(BackendlessFault fault);
+    }
 
+    public void saveGlobleGeoLocation(String tittle, String detail, LatLng location,
+                                      final BackendlessPostMarkerCallback backendlessCallback) {
 
-    private void saveGlobleGeoLocation() {
         List<String> categories = new ArrayList<String>();
-        categories.add("restaurants");
-        categories.add("cool_places");
+        categories.add(GEO_CATEGORY_MARKER_ID);
 
         Map<String, Object> meta = new HashMap<String, Object>();
-        meta.put("name", "Eatzi's");
+        meta.put("marker_tittle", tittle);
+        meta.put("marker_detail", detail);
 
-        Backendless.Geo.savePoint(32.81, -96.80, categories, meta,
+        Backendless.Geo.savePoint(location.latitude, location.longitude, categories, meta,
                 new AsyncCallback<GeoPoint>() {
                     @Override
                     public void handleResponse(GeoPoint geoPoint) {
-                        //Log.i( "MYAPP", geoPoint.getObjectId() );
+                        backendlessCallback.callbackSuccess(geoPoint);
                     }
 
                     @Override
                     public void handleFault(BackendlessFault backendlessFault) {
-
+                        backendlessCallback.callbackFailure(backendlessFault);
                     }
                 });
     }
+
+    public void getGlobalMarkers(final BackendlessGetMarkerCallback backendlessCallback) {
+
+        BackendlessGeoQuery geoQuery = new BackendlessGeoQuery();
+        geoQuery.addCategory(GEO_CATEGORY_MARKER_ID);
+        geoQuery.setIncludeMeta( true );
+        Backendless.Geo.getPoints( geoQuery , new AsyncCallback<BackendlessCollection<GeoPoint>>(){
+            @Override
+            public void handleResponse(BackendlessCollection<GeoPoint> response) {
+                backendlessCallback.callbackSuccess(response);
+            }
+
+            @Override
+            public void handleFault(BackendlessFault fault) {
+                backendlessCallback.callbackFailure(fault);
+            }
+        });
+    }
+
 
 
     public void registerUser(HashMap userInfo){
